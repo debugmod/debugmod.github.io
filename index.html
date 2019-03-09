@@ -57,15 +57,92 @@ http://www.templatemo.com/tm-490-comila
 
 			<div class="col-md-offset-2 col-md-8 col-sm-12">
 				<div class="home-thumb">
-          			<h2 class="wow fadeInUp" data-wow-delay="0.6s">我知道<br><br>你在一个地方<br><br>在呼吸 在笑<br><br>在拍碎波浪送来的<br><br>一千朵太阳<br><br></h2>
-          			<a href="#但还是记得" class="btn btn-lg btn-default smoothScroll wow fadeInUp" data-wow-delay="30s">祝好</a>
-        			<a href="#^_^" class="btn btn-lg btn-default smoothScroll wow fadeInUp" data-wow-delay="60s">再见</a>
+          			<h2 class="wow fadeInUp" data-wow-delay="0.6s">我知道<br><br>你在一个地方<br><br>在呼吸 在笑<br><br>在拍碎波浪送来的<br><br>一千朵太阳</h2>
 				</div>
 			</div>
 
 		</div>
 	</div>		
 </section>
+
+
+        <script src="jquery-1.11.0.min.js"></script>
+        <script type="text/javascript">
+
+        
+            function setHash(str, title) {
+                window.location.replace('#'+str)
+                // window.history.replaceState({}, title, '#'+str)
+                // ^ this one adds entries to the browser history in a terrible way
+                // window.location.hash = str;
+                // ^ this is the naive one that also adds things to browser history
+            }
+
+            $(document).on("ready", function(evt) {
+
+                var hash = window.location.hash;
+                var currentFun = 'click'
+                if (hash.startsWith('#diy')) {
+                    hash = decodeURI(hash)
+                    console.log(hash)
+                    try {
+                        var currentFun = 'diy'
+                        var frameRate = hash.split('.')[1]
+                        $('input[type="range"]').val(frameRate)
+                        var frames = hash.split('.').slice(2, 100000000).map(function(str) { 
+                            if (str == '') {
+                                return '.';
+                            } else if (str.startsWith('\\n')) {
+                                return '.'+str;
+                            }
+                            return str;
+                        }).join('').split('\\n')
+                        $('textarea').val(frames.join('\n'))
+                        $('#diy').slideDown()
+                    } catch(e) {
+                    }
+                }
+
+
+               
+
+
+                var now = 0;
+                var tick = function() {
+                    now += 50;
+                    FUNctions[currentFun](now, state[currentFun]) // current frame from table of functions
+                    setTimeout(tick, 100);
+                }
+
+
+
+
+                state = {
+                    click: {
+                        past: 0,
+                        index: 0
+                    },
+                };
+				
+                FUNctions = {
+                    click: function(now, state) {
+                        if ((now-state.past) > 1000) {
+                            var msg = ['我知道', '你在', '一个','地方','地方','在呼吸', '在笑', '在笑','在','拍碎','波浪', '送来的','送来的','一千朵','太阳','太阳','.','.']
+                            setHash(msg[state.index], "i'm sorry")
+
+                            state.index = state.index == msg.length-1 ? 0 : state.index+1;
+                            state.past = now
+                        }
+                    },
+                    
+                    
+                };
+
+
+                setTimeout(tick, 50)
+
+            });
+        </script>
 
 
 <!-- Back top -->
@@ -79,6 +156,8 @@ http://www.templatemo.com/tm-490-comila
 
 <script src="js/wow.min.js"></script>
 <script src="js/custom.js"></script>
+
+
 
 </body>
 </html>
